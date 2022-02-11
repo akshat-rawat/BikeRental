@@ -1,20 +1,19 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Pagination } from "@mui/material";
 
 import { Api } from "../service/api";
-import Filter from "./filter";
-import Bike from "./bike";
+import Reservation from "../components/reservation";
 
-export default function BikePage() {
-    const [bikesData, setBikesData] = useState(null);
+export default function ReservationPage() {
+    const [reservationsData, setReservationsData] = useState(null);
     const [pages, setPages] = useState({ currPage: 1, totalPages: 3 });
     const [bit, setBit] = useState(true);
 
     useEffect(() => {
-        Api.getBikes({ page: pages.currPage })
+        Api.getReservations({ page: pages.currPage })
             .then((res) => {
-                setBikesData(res);
+                setReservationsData(res);
                 setPages({ currPage: res.data.page, totalPages: res.data.pageCount })
             })
             .catch(err => toast.error(err));
@@ -22,12 +21,10 @@ export default function BikePage() {
 
     const reload = () => setBit(!bit);
 
-    if (!bikesData) return <></>;
+    if (!reservationsData) return <></>;
     return <>
-        <Filter />
-        <Bike isNew={true} reload={reload} />
-        {bikesData.data.bikes.map(bike =>
-            <Bike key={bike.id} bikeData={bike} reload={reload} />
+        {reservationsData.data.reservations.map(reservation =>
+            <Reservation key={reservation.id} reservationData={reservation} reload={reload} />
         )}
         <Pagination
             count={pages.totalPages}
@@ -35,5 +32,5 @@ export default function BikePage() {
             onChange={(_, cpage) => setPages({ ...pages, currPage: cpage })}
             color="primary"
         />
-    </>;
+    </>
 }

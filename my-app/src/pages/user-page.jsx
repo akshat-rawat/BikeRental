@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { Pagination } from "@mui/material";
 
 import { Api } from "../service/api";
-import User from "./user";
+import User from "../components/user";
 
 export default function UserPage() {
     const [usersData, setUsersData] = useState(null);

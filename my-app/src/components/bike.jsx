@@ -54,7 +54,7 @@ export default function Bike({
                     {isEditMode ?
                         <CardContent>
                             <TextField id="outlined-text" label="Name" value={editData.name} onChange={(e) => setEditData({ ...editData, name: e.target.value })} /> <br />
-                            <Rating value={editData.avgRating} onChange={(_, newValue) => setEditData({ ...editData, rating: newValue })} /> <br />
+                            <Rating value={editData.avgRating} onChange={(_, newValue) => setEditData({ ...editData, avgRating: newValue })} /> <br />
                             <TextField id="outlined-text" label="Model" value={editData.model} onChange={(e) => setEditData({ ...editData, model: e.target.value })} /> <br />
                             <TextField id="outlined-text" label="Color" value={editData.color} onChange={(e) => setEditData({ ...editData, color: e.target.value })} /> <br />
                             <TextField id="outlined-text" label="Location" value={editData.location} onChange={(e) => setEditData({ ...editData, location: e.target.value })} />

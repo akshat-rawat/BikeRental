@@ -1,13 +1,13 @@
 import "./App.css";
-import NavBar from "./comps/nav-bar";
+import NavBar from "./components/nav-bar";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Toast from "./utils/toast";
 
-import BikePage from "./comps/bike-page";
-import ReservationPage from "./comps/reservation-page";
-import UserPage from "./comps/user-page";
-import LogIn from "./comps/log-in";
-import SignUp from "./comps/sign-up";
+import BikePage from "./pages/bike-page";
+import ReservationPage from "./pages/reservation-page";
+import UserPage from "./pages/user-page";
+import LogIn from "./pages/auth/log-in";
+import SignUp from "./pages/auth/sign-up";
 
 function App() {
   return (

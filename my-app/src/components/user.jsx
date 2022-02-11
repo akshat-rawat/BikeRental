@@ -20,7 +20,7 @@ export default function User({
     });
 
     useEffect(() => {
-        if (userData) setEditData({ ...editData, ...userData });
+        if (userData) setEditData({ password: "", ...userData });
     }, [userData]);
 
     const handleDelete = () => {
@@ -35,11 +35,6 @@ export default function User({
             return;
         }
         toast.success("User Updated Successfully");
-        reload();
-    }
-
-    const handleBooking = () => {
-        toast.success("User Booked Successfully");
         reload();
     }
 
