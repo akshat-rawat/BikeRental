@@ -86,7 +86,7 @@ export default function Bike({
                     <CardActions>
                         {!isNew && <Button size="small" onClick={() => setEditMode(!isEditMode)}>{isEditMode ? 'Cancel' : 'Edit'}</Button>}
                         {isEditMode ? <Button size="small" onClick={handleSubmit}>Submit</Button> : <Button size="small" onClick={handleDelete}>Delete</Button>}
-                        {!isEditMode && <Button size="medium" onClick={handleBooking}>Book Now</Button>}
+                        {!isEditMode && bikeData.isAvailable && <Button size="medium" onClick={handleBooking}>Book Now</Button>}
                     </CardActions>
                 </React.Fragment>
             </Card>

@@ -1,15 +1,15 @@
 import { BikesData, ReservationsData, UsersData } from "../utils/constants";
 
 export const Api = {
-  login: async () => {
+  login: async ({ email, password }) => {
     return {
       data: {
-        isManager: true,
+        isManager: false,
       },
     };
   },
 
-  signup: async () => {},
+  signup: async ({ firstName, lastName, email, password }) => {},
 
   getBikes: async ({ name, model, color, minRating, page = 1 }) => {
     return {

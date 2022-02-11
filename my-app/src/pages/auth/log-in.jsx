@@ -1,20 +1,37 @@
 import * as React from 'react';
+import { toast } from 'react-toastify';
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container } from '@mui/material/';
+
+import { Api } from '../../service/api';
+import useAuth from '../../hooks/useAuth';
 
 
 const theme = createTheme();
 
 export default function LogIn() {
 
+  const navigate = useNavigate();
+
+  const [user, setUser] = useAuth();
+  const [coookies, setCookie] = useCookies(["user"]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    Api.login({ email: data.get('email'), password: data.get('password') })
+      .then(res => {
+        toast.success("Login Succesful");
+        setCookie("user", res.data, { path: "/" });
+        setUser(res.data);
+        navigate("/");
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.message || "Something went wrong");
+      });
   };
 
   return (

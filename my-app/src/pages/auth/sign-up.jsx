@@ -1,19 +1,33 @@
 import * as React from 'react';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container } from '@mui/material/';
+import { Api } from '../../service/api';
 
 
 const theme = createTheme();
 
 export default function SignUp() {
+    const navigate = useNavigate();
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
+        Api.signup({
+            firstName: data.get('firstName'),
+            lastName: data.get('lastName'),
             email: data.get('email'),
-            password: data.get('password'),
-        });
+            password: data.get('password')
+        })
+            .then(res => {
+                toast.success("SIGN UP SUCCESSFULL");
+                navigate("/login");
+            })
+            .catch((error) => {
+                toast.error(error?.response?.data?.message || "Something went wrong");
+            });
     };
 
     return (
