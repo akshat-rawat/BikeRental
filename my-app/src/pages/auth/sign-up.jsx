@@ -21,7 +21,7 @@ export default function SignUp() {
             email: data.get('email'),
             password: data.get('password')
         })
-            .then(res => {
+            .then(() => {
                 toast.success("SIGN UP SUCCESSFULL");
                 navigate("/login");
             })
@@ -48,7 +48,7 @@ export default function SignUp() {
                     <Typography component="h1" variant="h5">
                         Sign up
                     </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
@@ -77,6 +77,7 @@ export default function SignUp() {
                                     fullWidth
                                     id="email"
                                     label="Email Address"
+                                    type="email"
                                     name="email"
                                     autoComplete="email"
                                 />

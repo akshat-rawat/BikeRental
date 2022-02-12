@@ -10,6 +10,7 @@ export default function BikePage() {
     const [bikesData, setBikesData] = useState(null);
     const [pages, setPages] = useState({ currPage: 1, totalPages: 3 });
     const [bit, setBit] = useState(true);
+    const [filterData, setFilterData] = useState();
 
     useEffect(() => {
         Api.getBikes({ page: pages.currPage })
@@ -24,10 +25,10 @@ export default function BikePage() {
 
     if (!bikesData) return <></>;
     return <>
-        <Filter />
+        <Filter setFilterData={setFilterData} />
         <Bike isNew={true} reload={reload} />
         {bikesData.data.bikes.map(bike =>
-            <Bike key={bike.id} bikeData={bike} reload={reload} />
+            <Bike key={bike.id} bikeData={bike} reload={reload} canBookNow={filterData && filterData.fromDate && filterData.toDate} />
         )}
         <Pagination
             count={pages.totalPages}

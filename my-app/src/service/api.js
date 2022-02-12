@@ -4,14 +4,14 @@ export const Api = {
   login: async ({ email, password }) => {
     return {
       data: {
-        isManager: false,
+        isManager: true,
       },
     };
   },
 
   signup: async ({ firstName, lastName, email, password }) => {},
 
-  getBikes: async ({ name, model, color, minRating, page = 1 }) => {
+  getBikes: async ({ model, color, minRating, page = 1 }) => {
     return {
       data: { page, pageCount: 3, bikes: BikesData },
     };

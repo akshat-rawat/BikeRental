@@ -20,7 +20,7 @@ export default function Reservation({ reservationData, reload }) {
                 <React.Fragment>
                     <CardContent>
                         <Typography variant="h4" component="div">
-                            {reservationData.bikeName}
+                            {reservationData.bikeModel}
                         </Typography>
                         <Typography variant="h6">
                             {reservationData.fromDate} - {reservationData.toDate}

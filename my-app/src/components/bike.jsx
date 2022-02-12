@@ -10,11 +10,11 @@ import { TextField, Rating, Box, Card, CardActions, CardContent, Button, Typogra
 export default function Bike({
     bikeData,
     isNew,
-    reload
+    reload,
+    canBookNow
 }) {
     const [isEditMode, setEditMode] = useState(isNew);
     const [editData, setEditData] = useState({
-        name: "",
         avgRating: 0,
         model: "",
         color: "",
@@ -31,8 +31,8 @@ export default function Bike({
         reload();
     }
 
-    const handleSubmit = () => {
-        console.log(editData);
+    const handleSubmit = (event) => {
+        event.preventDefault();
         if (isNew) {
             toast.success("Bike Added Successfully");
             reload();
@@ -48,16 +48,15 @@ export default function Bike({
     }
 
     return <>
-        <Box sx={{ minWidth: 275 }}>
+        <Box sx={{ minWidth: 275 }} component="form" onSubmit={handleSubmit}>
             <Card variant="outlined">
                 <React.Fragment>
                     {isEditMode ?
                         <CardContent>
-                            <TextField id="outlined-text" label="Name" value={editData.name} onChange={(e) => setEditData({ ...editData, name: e.target.value })} /> <br />
-                            <Rating value={editData.avgRating} onChange={(_, newValue) => setEditData({ ...editData, avgRating: newValue })} /> <br />
-                            <TextField id="outlined-text" label="Model" value={editData.model} onChange={(e) => setEditData({ ...editData, model: e.target.value })} /> <br />
-                            <TextField id="outlined-text" label="Color" value={editData.color} onChange={(e) => setEditData({ ...editData, color: e.target.value })} /> <br />
-                            <TextField id="outlined-text" label="Location" value={editData.location} onChange={(e) => setEditData({ ...editData, location: e.target.value })} />
+                            <TextField margin="normal" required id="outlined-required" label="Model" value={editData.model} onChange={(e) => setEditData({ ...editData, model: e.target.value })} /> <br />
+                            <Rating margin="normal" value={editData.avgRating} onChange={(_, newValue) => setEditData({ ...editData, avgRating: newValue })} /> <br />
+                            <TextField margin="normal" required id="outlined-required" label="Color" value={editData.color} onChange={(e) => setEditData({ ...editData, color: e.target.value })} /> <br />
+                            <TextField margin="normal" required id="outlined-required" label="Location" value={editData.location} onChange={(e) => setEditData({ ...editData, location: e.target.value })} />
                             <Typography variant="h6">
                                 <Checkbox checked={editData.isAvailable} onChange={e => { setEditData({ ...editData, isAvailable: e.target.checked }) }} />
                                 Available
@@ -65,12 +64,9 @@ export default function Bike({
                         </CardContent> :
                         <CardContent>
                             <Typography variant="h4" component="div">
-                                {bikeData.name}
-                            </Typography>
-                            <Rating name="read-only" value={bikeData.avgRating} readOnly />
-                            <Typography variant="h6">
                                 {bikeData.model}
                             </Typography>
+                            <Rating name="read-only" value={bikeData.avgRating} readOnly />
                             <Typography variant="h6">
                                 {bikeData.color}
                             </Typography>
@@ -85,8 +81,8 @@ export default function Bike({
                     }
                     <CardActions>
                         {!isNew && <Button size="small" onClick={() => setEditMode(!isEditMode)}>{isEditMode ? 'Cancel' : 'Edit'}</Button>}
-                        {isEditMode ? <Button size="small" onClick={handleSubmit}>Submit</Button> : <Button size="small" onClick={handleDelete}>Delete</Button>}
-                        {!isEditMode && bikeData.isAvailable && <Button size="medium" onClick={handleBooking}>Book Now</Button>}
+                        {isEditMode ? <Button size="small" type="submit">Submit</Button> : <Button size="small" onClick={handleDelete}>Delete</Button>}
+                        {!isEditMode && bikeData.isAvailable && canBookNow && <Button size="medium" type="submit" onSubmit={handleBooking}>Book Now</Button>}
                     </CardActions>
                 </React.Fragment>
             </Card>

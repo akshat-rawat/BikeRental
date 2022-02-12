@@ -28,7 +28,8 @@ export default function User({
         reload();
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = (event) => {
+        event.preventDefault();
         if (isNew) {
             toast.success("User Added Successfully");
             reload();
@@ -39,14 +40,14 @@ export default function User({
     }
 
     return <>
-        <Box sx={{ minWidth: 275 }}>
+        <Box sx={{ minWidth: 275 }} component="form" onSubmit={handleSubmit}>
             <Card variant="outlined">
                 <React.Fragment>
                     {isEditMode ?
                         <CardContent>
-                            <TextField id="outlined-text" label="Name" value={editData.name} onChange={(e) => setEditData({ ...editData, name: e.target.value })} /> <br />
-                            <TextField id="outlined-email" label="Email" type="email" value={editData.email} onChange={(e) => setEditData({ ...editData, email: e.target.value })} /> <br />
-                            <TextField id="outlined-password" label="Password" type="password" value={editData.password} onChange={(e) => setEditData({ ...editData, password: e.target.value })} /> <br />
+                            <TextField required margin="normal" id="outlined-text" label="Name" value={editData.name} onChange={(e) => setEditData({ ...editData, name: e.target.value })} /> <br />
+                            <TextField required margin="normal" id="outlined-email" label="Email" type="email" value={editData.email} onChange={(e) => setEditData({ ...editData, email: e.target.value })} /> <br />
+                            <TextField required margin="normal" id="outlined-password" label="Password" type="password" value={editData.password} onChange={(e) => setEditData({ ...editData, password: e.target.value })} /> <br />
                             <Typography variant="h6">
                                 <Checkbox checked={editData.isManager} onChange={e => { setEditData({ ...editData, isManager: e.target.checked }) }} />
                                 Manager
@@ -67,7 +68,7 @@ export default function User({
                     }
                     <CardActions>
                         {!isNew && <Button size="small" onClick={() => setEditMode(!isEditMode)}>{isEditMode ? 'Cancel' : 'Edit'}</Button>}
-                        {isEditMode ? <Button size="small" onClick={handleSubmit}>Submit</Button> : <Button size="small" onClick={handleDelete}>Delete</Button>}
+                        {isEditMode ? <Button size="small" type="submit">Submit</Button> : <Button size="small" onClick={handleDelete}>Delete</Button>}
                     </CardActions>
                 </React.Fragment>
             </Card>

@@ -1,7 +1,6 @@
 export const BikesData = [
   {
     id: 1,
-    name: "Mitsubishi",
     avgRating: 1,
     model: "GTO",
     color: "Teal",
@@ -10,7 +9,6 @@ export const BikesData = [
   },
   {
     id: 2,
-    name: "Lexus",
     avgRating: 4,
     model: "IS",
     color: "Green",
@@ -19,7 +17,6 @@ export const BikesData = [
   },
   {
     id: 3,
-    name: "Pontiac",
     avgRating: 1,
     model: "Firefly",
     color: "Blue",
@@ -28,7 +25,6 @@ export const BikesData = [
   },
   {
     id: 4,
-    name: "MINI",
     avgRating: 2,
     model: "Cooper",
     color: "Pink",
@@ -37,7 +33,6 @@ export const BikesData = [
   },
   {
     id: 5,
-    name: "Suzuki",
     avgRating: 5,
     model: "Sidekick",
     color: "Maroon",
@@ -46,7 +41,6 @@ export const BikesData = [
   },
   {
     id: 6,
-    name: "Subaru",
     avgRating: 3,
     model: "Impreza",
     color: "Purple",
@@ -55,7 +49,6 @@ export const BikesData = [
   },
   {
     id: 7,
-    name: "Subaru",
     avgRating: 4,
     model: "SVX",
     color: "Violet",
@@ -64,7 +57,6 @@ export const BikesData = [
   },
   {
     id: 8,
-    name: "Hyundai",
     avgRating: 5,
     model: "Sonata",
     color: "Goldenrod",
@@ -73,7 +65,6 @@ export const BikesData = [
   },
   {
     id: 9,
-    name: "Volkswagen",
     avgRating: 3,
     model: "Touareg 2",
     color: "Violet",
@@ -82,7 +73,6 @@ export const BikesData = [
   },
   {
     id: 10,
-    name: "BMW",
     avgRating: 2,
     model: "X5",
     color: "Teal",
@@ -91,7 +81,6 @@ export const BikesData = [
   },
   {
     id: 11,
-    name: "Lotus",
     avgRating: 2,
     model: "Exige",
     color: "Crimson",
@@ -100,7 +89,6 @@ export const BikesData = [
   },
   {
     id: 12,
-    name: "Saab",
     avgRating: 5,
     model: "900",
     color: "Purple",
@@ -109,7 +97,6 @@ export const BikesData = [
   },
   {
     id: 13,
-    name: "Volkswagen",
     avgRating: 3,
     model: "Cabriolet",
     color: "Crimson",
@@ -118,7 +105,6 @@ export const BikesData = [
   },
   {
     id: 14,
-    name: "Toyota",
     avgRating: 5,
     model: "Celica",
     color: "Crimson",
@@ -127,7 +113,6 @@ export const BikesData = [
   },
   {
     id: 15,
-    name: "Dodge",
     avgRating: 3,
     model: "Durango",
     color: "Aquamarine",
@@ -140,70 +125,70 @@ export const ReservationsData = [
   {
     id: 1,
     bikeID: "98",
-    bikeName: "Volkswagen",
+    bikeModel: "Volkswagen",
     fromDate: "2021/03/18",
     toDate: "2021/09/11",
   },
   {
     id: 2,
     bikeID: "6104",
-    bikeName: "Volkswagen",
+    bikeModel: "Volkswagen",
     fromDate: "2021/09/16",
     toDate: "2022/01/01",
   },
   {
     id: 3,
     bikeID: "45",
-    bikeName: "Infiniti",
+    bikeModel: "Infiniti",
     fromDate: "2021/12/28",
     toDate: "2021/03/21",
   },
   {
     id: 4,
     bikeID: "4684",
-    bikeName: "Lexus",
+    bikeModel: "Lexus",
     fromDate: "2021/08/21",
     toDate: "2021/03/04",
   },
   {
     id: 5,
     bikeID: "122",
-    bikeName: "Suzuki",
+    bikeModel: "Suzuki",
     fromDate: "2021/09/22",
     toDate: "2021/04/09",
   },
   {
     id: 6,
     bikeID: "6141",
-    bikeName: "Nissan",
+    bikeModel: "Nissan",
     fromDate: "2021/12/15",
     toDate: "2021/08/23",
   },
   {
     id: 7,
     bikeID: "6665",
-    bikeName: "Mercedes-Benz",
+    bikeModel: "Mercedes-Benz",
     fromDate: "2021/08/07",
     toDate: "2021/06/27",
   },
   {
     id: 8,
     bikeID: "7074",
-    bikeName: "Saab",
+    bikeModel: "Saab",
     fromDate: "2021/09/22",
     toDate: "2021/03/19",
   },
   {
     id: 9,
     bikeID: "6269",
-    bikeName: "BMW",
+    bikeModel: "BMW",
     fromDate: "2021/10/27",
     toDate: "2021/10/27",
   },
   {
     id: 10,
     bikeID: "1967",
-    bikeName: "Mitsubishi",
+    bikeModel: "Mitsubishi",
     fromDate: "2021/03/21",
     toDate: "2022/02/01",
   },
