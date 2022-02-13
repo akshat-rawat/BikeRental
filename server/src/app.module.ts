@@ -7,7 +7,7 @@ import User from './db/entity/user';
 import Bike from './db/entity/bike';
 import Reservation from './db/entity/reservation';
 
-import BikesController from './app/bike/bike.controller';
+import BikeController from './app/bike/bike.controller';
 import BikeService from './app/bike/bike.service';
 import UserController from './app/user/user.controller';
 import UserService from './app/user/user.service';
@@ -24,7 +24,12 @@ import ReservationService from './app/reservation/reservation.service';
       logging: true,
     }),
   ],
-  controllers: [AppController, BikesController, UserController, ReservationController],
+  controllers: [
+    AppController,
+    BikeController,
+    UserController,
+    ReservationController,
+  ],
   providers: [AppService, BikeService, UserService, ReservationService],
 })
 export class AppModule {}

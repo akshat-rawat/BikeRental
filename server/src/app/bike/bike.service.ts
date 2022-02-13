@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import Bike from 'src/db/entity/bike';
-import Reservation from 'src/db/entity/reservation';
+import Bike from '../../db/entity/bike';
+import Reservation from '../../db/entity/reservation';
 import { PageSize } from '../util';
 
 @Injectable()

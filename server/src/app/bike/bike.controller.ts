@@ -5,7 +5,7 @@ import { bikeSchema, reservationSchema } from '../validator';
 import BikeService from './bike.service';
 
 @Controller('bike')
-export default class BikesController {
+export default class BikeController {
   constructor(private readonly bikeService: BikeService) {}
 
   @UseGuards(ManagerGuard)
