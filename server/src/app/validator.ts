@@ -25,3 +25,13 @@ const UserSchema = SignupSchema.append({
 export const loginValidate = (data: Record<string, unknown>) => validate(LoginSchema, data);
 export const signupSchema = (data: Record<string, unknown>) => validate(SignupSchema, data);
 export const userSchema = (data: Record<string, unknown>) => validate(UserSchema, data);
+
+
+const BikeSchema = Joi.object({
+  model: Joi.string().min(1).required(),
+  color: Joi.string().min(1).required(),
+  location: Joi.string().min(1).required(),
+  isAvailable: Joi.boolean().required(),
+});
+
+export const bikeSchema = (data: Record<string, unknown>) => validate(BikeSchema, data);
