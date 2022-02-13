@@ -1,11 +1,10 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import Bike from "src/db/entity/bike";
-import { PageSize } from "../util";
-
+import { Injectable, NotFoundException } from '@nestjs/common';
+import Bike from 'src/db/entity/bike';
+import Reservation from 'src/db/entity/reservation';
+import { PageSize } from '../util';
 
 @Injectable()
-export default class BikeService { 
-    
+export default class BikeService {
   async addBike({ model, color, location, isAvailable }) {
     const bike = new Bike();
     bike.model = model;
@@ -28,7 +27,7 @@ export default class BikeService {
     return { bikes, page, pageCount };
   }
 
-  async updateBike(id: string, {  model, color, location, isAvailable }) {
+  async updateBike(id: string, { model, color, location, isAvailable }) {
     const bike = await Bike.findOne(id);
     if (bike) {
       bike.model = model;
@@ -39,7 +38,7 @@ export default class BikeService {
       return bike;
     } else throw new NotFoundException();
   }
-  
+
   async deleteBike(id: string) {
     const bike = await Bike.findOne(id);
     if (bike) {
@@ -47,5 +46,15 @@ export default class BikeService {
       return {};
     }
     throw new NotFoundException();
+  }
+
+  async addReservation(id, authUser, { fromDateTime, toDateTime }) {
+    const reservation = new Reservation();
+    reservation.bikeId = id;
+    reservation.userId = authUser.id;
+    reservation.fromDateTime = fromDateTime;
+    reservation.toDateTime = toDateTime;
+    await reservation.save();
+    return reservation;
   }
 }

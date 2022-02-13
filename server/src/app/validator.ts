@@ -35,3 +35,11 @@ const BikeSchema = Joi.object({
 });
 
 export const bikeSchema = (data: Record<string, unknown>) => validate(BikeSchema, data);
+
+
+const ReservationSchema = Joi.object({
+  fromDateTime: Joi.date().iso().required(),
+  toDateTime: Joi.date().iso().greater(Date.now()).min(Joi.ref('fromDateTime')).required(),
+});
+
+export const reservationSchema = (data: Record<string, unknown>) => validate(ReservationSchema, data);

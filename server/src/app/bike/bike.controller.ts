@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import ManagerGuard from '../guard/manager.guard';
 import AuthGuard from '../guard/auth.guard';
-import { bikeSchema } from '../validator';
+import { bikeSchema, reservationSchema } from '../validator';
 import BikeService from './bike.service';
 
 @Controller('bike')
@@ -18,7 +18,7 @@ export default class BikesController {
   @UseGuards(AuthGuard)
   @Get('/')
   getBikes(@Query('page') page = '1') {
-      this.bikeService.getBikes(page);
+      return this.bikeService.getBikes(page);
   }
   
   @UseGuards(ManagerGuard)
@@ -32,5 +32,12 @@ export default class BikesController {
   @Delete('/:id')
   deleteUser(@Param('id') id: string) {
     return this.bikeService.deleteBike(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('/:id/reservation')
+  addReservation(@Param('id') id: string, @Req() req: any, @Body() body: Record<string, unknown>) { 
+    const { fromDateTime, toDateTime } = reservationSchema(body);
+    return this.bikeService.addReservation(id, req.user, { fromDateTime, toDateTime });
   }
 }
