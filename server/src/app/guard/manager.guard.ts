@@ -3,7 +3,6 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { decryptJwt } from '../util';
 
 export default class ManagerGuard implements CanActivate {

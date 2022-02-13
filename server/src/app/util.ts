@@ -1,13 +1,16 @@
 import * as Jwt from 'jsonwebtoken';
 import User from '../db/entity/user';
 
-const JWT_SECRET_KEY = 'iuweydhj30qf9gqy3dj32hu4i';
+export const JWT_SECRET_KEY = 'iuweydhj30qf9gqy3dj32hu4i';
 
-export const decryptJwt = async (jwt) => {
+export const decryptJwt = async (jwt: string) => {
   try {
     const { userId } = Jwt.verify(jwt, JWT_SECRET_KEY);
-    const user = await User.findOne(userId);
+    return await User.findOne(userId);
   } catch (e) {
     return undefined;
   }
 };
+
+
+export const PageSize = 10;
