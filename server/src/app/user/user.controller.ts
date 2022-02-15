@@ -33,7 +33,7 @@ export default class UserController {
   @Post('/')
   addUser(@Body() body: Record<string, unknown>) {
     const { name, email, password, isManager } = userValidate(body);
-    return this.userService.addUser({email, password, name, isManager});
+    return this.userService.addUser({ email, password, name, isManager });
   }
 
   @UseGuards(ManagerGuard)
@@ -45,8 +45,13 @@ export default class UserController {
   @UseGuards(ManagerGuard)
   @Put('/:id')
   updateUser(@Param('id') id: string, @Body() body: Record<string, unknown>) {
-   const { name, email, password, isManager } = userValidate(body);
-   return this.userService.updateUser(id, {email, password, name, isManager});
+    const { name, email, password, isManager } = userValidate(body);
+    return this.userService.updateUser(id, {
+      email,
+      password,
+      name,
+      isManager,
+    });
   }
 
   @UseGuards(ManagerGuard)

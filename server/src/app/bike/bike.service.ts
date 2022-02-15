@@ -1,9 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import Rating from '../../db/entity/rating';
 import User from '../../db/entity/user';
 import Bike from '../../db/entity/bike';
 import Reservation from '../../db/entity/reservation';
 import { PageSize } from '../util';
+import { FindCondition, getRepository, MoreThanOrEqual } from 'typeorm';
+import { NotIn } from '../typeorm.operator';
+import Rating from '../../db/entity/rating';
 
 @Injectable()
 export default class BikeService {
@@ -17,14 +19,36 @@ export default class BikeService {
     return bike;
   }
 
-  async getBikes(reqPage: string) {
-    const page = Math.max(Number(reqPage) || 1, 1);
+  async getBikes(
+    { page, color, model, location, rating, fromDateTime, toDateTime },
+    authUser: User,
+  ) {
+    page = Math.max(Number(page) || 1, 1);
+    const whereClause: FindCondition<Bike> = {};
+    if (color) whereClause.color = color;
+    if (model) whereClause.model = model;
+    if (location) whereClause.location = location;
+    if (rating) whereClause.avgRating = MoreThanOrEqual(rating);
+    if (!authUser.isManager) whereClause.isAvailable = true;
+
+    if (fromDateTime && toDateTime) {
+      const bookedBikes: number[] = await this.getBookedBiked({
+        fromDateTime,
+        toDateTime,
+      });
+
+      if (bookedBikes.length > 0) {
+        whereClause.id = NotIn(bookedBikes);
+      }
+    }
+
     const bikes = await Bike.find({
+      where: whereClause,
       take: PageSize,
       skip: (page - 1) * PageSize,
     });
 
-    const bikeCount = await Bike.count({});
+    const bikeCount = await Bike.count({ where: whereClause });
     const pageCount = Math.ceil(bikeCount / PageSize);
     return { bikes, page, pageCount };
   }
@@ -64,43 +88,20 @@ export default class BikeService {
     throw new NotFoundException();
   }
 
-  async updateBikeRating(bikeId: number) {
-    const bike = await Bike.findOne(bikeId);
-
-    const ratings = await Rating.find({ where: { bikeId } });
-    if (ratings.length === 0) {
-      bike.avgRating = 0;
-      await bike.save();
-      return bike;
-    }
-
-    const totalRatings = ratings.reduce(
-      (totalRating, review) => review.rating + totalRating,
-      0,
-    );
-
-    const avgRating = Number(Number(totalRatings / ratings.length).toFixed(2));
-    bike.avgRating = avgRating;
-    console.log(avgRating, ratings);
-    await bike.save();
-  }
-
-  async addRating({ bikeId, rating }, authUser: User) {
-    const rate = await Rating.findOne({
-      where: { userId: authUser.id, bikeId },
-    });
-
-    if (rate) {
-      rate.rating = rating;
-      await rate.save();
-    } else {
-      const newRating = new Rating();
-      newRating.bikeId = bikeId;
-      newRating.rating = rating;
-      newRating.userId = authUser.id;
-      await newRating.save();
-    }
-
-    this.updateBikeRating(bikeId);
+  private async getBookedBiked({
+    fromDateTime,
+    toDateTime,
+  }): Promise<number[]> {
+    const reservations = await getRepository(Reservation)
+      .createQueryBuilder('res')
+      .where(
+        'res.status = :status and ((res.toDateTime between :fromDateTime and :toDateTime) or ' +
+          '(res.fromDateTime between :fromDateTime and :toDateTime) or ' +
+          '(res.fromDateTime < :fromDateTime and res.toDateTime > :toDateTime))',
+        { fromDateTime, toDateTime, status: 'active' },
+      )
+      .getMany();
+    const bikeIds = reservations.map((r) => r.bikeId);
+    return bikeIds;
   }
 }

@@ -1,28 +1,44 @@
-import { Controller, Delete, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 
 import AuthGuard from '../guard/auth.guard';
-import ManagerGuard from '../guard/manager.guard';
 import ReservationService from './reservation.service';
+import { ratingValidate } from '../validator';
 
 @Controller('reservation')
 export default class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
 
-  // @UseGuards(ManagerGuard)
-  @Get('/all')
-  getAllReservations(@Query('page') page = '1') {
-    return this.reservationService.getAllReservations(page);
+  @UseGuards(AuthGuard)
+  @Get('/')
+  getReservations(@Query() { page = '1', bikeId, userId }, @Req() req) {
+    return this.reservationService.getAllReservations(
+      { page, bikeId, userId },
+      req.user,
+    );
   }
 
   @UseGuards(AuthGuard)
-  @Get('/user')
-  getUserReservations(@Query('page') page = '1', @Req() req: any) {
-    return this.reservationService.getUserReservations(page, req.user);
+  @Put('/:id/cancel')
+  deleteReservation(@Param('id') reservationId: string, @Req() req: any) {
+    return this.reservationService.cancelReservation(reservationId, req.user);
   }
 
   @UseGuards(AuthGuard)
-  @Delete('/:id')
-  deleteReservation(@Param('id') id: string, @Req() req: any) {
-    return this.reservationService.deleteReservation(id, req.user);
+  @Post('/:id/rate/:rate')
+  addRating(@Param() params, @Req() req) {
+    const { id, rate } = ratingValidate(params);
+    return this.reservationService.addRating(
+      { reservationId: id, rate },
+      req.user,
+    );
   }
 }

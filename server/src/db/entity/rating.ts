@@ -1,5 +1,4 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import Bike from './bike';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'rating' })
 export default class Rating extends BaseEntity {
@@ -7,7 +6,8 @@ export default class Rating extends BaseEntity {
   @Column() userId: number;
   @Column() bikeId: number;
   @Column() rating: number;
-  
+  @Column() reservationId: number;
+
   // @ManyToOne(() => Bike)
   // @JoinColumn({ name: 'bikeId', referencedColumnName: 'id' })
   // bike: Bike;
