@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Pagination } from "@mui/material";
+import styled from "styled-components";
 
 import useAuth from "../hooks/useAuth";
 import { Api } from "../service/api";
 import Filter from "../components/filter";
 import Bike from "../components/bike";
-import styled from "styled-components";
-import AddIcon from '@mui/icons-material/Add';
 import { Button } from "@material-ui/core";
+import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
 
