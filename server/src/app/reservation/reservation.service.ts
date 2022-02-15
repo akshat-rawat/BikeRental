@@ -31,7 +31,7 @@ export default class ReservationService {
     const ratingMap = ratings.reduce((acc, rating) => {
       acc[rating.reservationId] = rating.rating;
       return acc;
-    });
+    }, 0);
 
     reservations.map((reservation) => {
       // @ts-ignore

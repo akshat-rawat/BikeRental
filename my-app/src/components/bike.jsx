@@ -5,9 +5,14 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { TextField, Rating, Box, Card, CardActions, CardContent, Button, Typography, Checkbox } from "@mui/material";
+import EditIcon from '@mui/icons-material/Edit';
+import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DoneIcon from '@mui/icons-material/Done';
 
 import useAuth from "../hooks/useAuth"
 import { Api } from "../service/api";
+import styled from "styled-components";
 
 
 export default function Bike({
@@ -59,6 +64,7 @@ export default function Bike({
                 })
                 .catch(err => toast.error(err?.response?.data?.message || "Something went wrong"));
         }
+        setEditMode(false);
     }
 
     const addRating = () => {
@@ -72,47 +78,98 @@ export default function Bike({
     }
 
     return <>
-        <Box sx={{ minWidth: 275 }} component="form" onSubmit={handleSubmit}>
-            <Card variant="outlined">
-                <React.Fragment>
-                    <CardContent>
-                        {isEditMode ?
-                            <>
-                                <TextField margin="normal" required id="outlined-required" label="Model" value={editData.model} onChange={(e) => setEditData({ ...editData, model: e.target.value })} /> <br />
-                                <TextField margin="normal" required id="outlined-required" label="Color" value={editData.color} onChange={(e) => setEditData({ ...editData, color: e.target.value })} /> <br />
-                                <TextField margin="normal" required id="outlined-required" label="Location" value={editData.location} onChange={(e) => setEditData({ ...editData, location: e.target.value })} />
-                                <Typography variant="h6">
-                                    <Checkbox checked={editData.isAvailable} onChange={e => { setEditData({ ...editData, isAvailable: e.target.checked }) }} />
-                                    Available
-                                </Typography>
-                            </> :
-                            <>
-                                <Typography variant="h4" component="div">
-                                    {bikeData.model}
-                                </Typography>
-                                <Typography variant="h6">
-                                    {bikeData.color}
-                                </Typography>
-                                <Typography variant="h6">
-                                    {bikeData.location}
-                                </Typography>
-                                <Typography variant="h6">
-                                    <Checkbox disabled checked={bikeData.isAvailable} />
-                                    Available
-                                </Typography>
-                            </>
-                        }
-                        <Rating name="read-only" value={editData.avgRating} onChange={(_, newValue) => setEditData({ ...editData, avgRating: newValue })} readOnly={!ratingMode} />
-                    </CardContent>
-                    <CardActions>
-                        {!ratingMode && !isNew && <Button size="small" onClick={() => setRatingmode(true)}>Rate Now</Button>}
-                        {ratingMode && !isNew && <Button size="small" onClick={addRating}>Done</Button>}
-                        {user.isManager && !isNew && <Button size="small" onClick={() => setEditMode(!isEditMode)}>{isEditMode ? 'Cancel' : 'Edit'}</Button>}
-                        {user.isManager && isEditMode ? <Button size="small" type="submit">Submit</Button> : <Button size="small" onClick={handleDelete}>Delete</Button>}
-                        {!isEditMode && bikeData.isAvailable && canBookNow && <Button size="medium" type="submit" onSubmit={handleBooking}>Book Now</Button>}
-                    </CardActions>
-                </React.Fragment>
-            </Card>
-        </Box>
+        <StyledComponents>
+            <Box sx={{ minWidth: 275 }} component="form" onSubmit={handleSubmit}>
+                <Card variant="outlined">
+                    <React.Fragment>
+                        <CardContent className="contents">
+
+                            <div className="inner-contents">
+                                <div className="">
+                                    {isEditMode ?
+                                        <>
+                                            <TextField fullWidth margin="normal" required id="outlined-required" label="Model" value={editData.model} onChange={(e) => setEditData({ ...editData, model: e.target.value })} /> <br />
+                                            <TextField fullWidth margin="normal" required id="outlined-required" label="Color" value={editData.color} onChange={(e) => setEditData({ ...editData, color: e.target.value })} /> <br />
+                                            <TextField fullWidth margin="normal" required id="outlined-required" label="Location" value={editData.location} onChange={(e) => setEditData({ ...editData, location: e.target.value })} />
+                                            <Typography variant="h6">
+                                                <Checkbox checked={editData.isAvailable} onChange={e => { setEditData({ ...editData, isAvailable: e.target.checked }) }} />
+                                                Available
+                                            </Typography>
+                                        </> :
+                                        <>
+                                        <div className="heading">
+                                            <Typography variant="h5" component="div" sx={{ marginBottom: '10px' }}>
+                                                {bikeData.model}
+                                            </Typography>
+                                        </div>
+                                            <div className="row">
+                                                <Rating name="read-only" value={bikeData.avgRating} readOnly /> 
+                                                <Typography variant="p">
+                                                    {bikeData.color}
+                                                </Typography> 
+                                            </div>
+                                            <div className="row">
+                                                <Typography variant="p">
+                                                    Available
+                                                    <Checkbox readOnly checked={bikeData.isAvailable} />
+                                                </Typography>
+                                                <Typography variant="p">
+                                                    {bikeData.location}
+                                                </Typography> 
+                                            </div>
+
+
+                                        </>
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </CardContent>
+                        <CardActions>
+                            {/* {!ratingMode && !isNew && <Button size="small" onClick={() => setRatingmode(true)}>Rate Now</Button>} */}
+                            {/* {ratingMode && !isNew && <Button size="small" onClick={addRating}>Done</Button>} */}
+                            {!isEditMode && bikeData.isAvailable && canBookNow && <div style={{ minWidth: "100px" }}> <Button size="medium" type="submit" onSubmit={handleBooking}>Book Now</Button></div>}
+                            {user.isManager && <div className="footer-icons">
+                                {!isNew && <Button size="small" onClick={() => setEditMode(!isEditMode)}>{isEditMode ? <CloseIcon color="error" /> : <EditIcon />}</Button>}
+                                {isEditMode ? <Button size="small" type="submit"><DoneIcon color="success" /></Button> : <Button size="small" onClick={handleDelete}><DeleteIcon color="error" /></Button>}
+                            </div>}
+                        </CardActions>
+                    </React.Fragment>
+                </Card>
+            </Box>
+        </StyledComponents>
     </>
 }
+
+
+const StyledComponents = styled.div`
+
+    margin:15px 0 ;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+    .heading { 
+        text-align: center;
+    }
+
+    .contents{
+        padding:20px 20px 0 20px;
+        line-height:2;
+    }
+
+   .footer-icons { 
+       width: 100%;
+    //    background: blue;
+       display: flex;
+       justify-content: flex-end;
+   }
+
+   .row { 
+       display: flex;
+       justify-content: space-between;
+       font-size: 18px;
+    }
+
+
+`

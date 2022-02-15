@@ -79,9 +79,8 @@ export const Api = {
     );
   },
 
-  getReservations: async ({ page = 1 }, { isManager, jwt }) => {
-    const reqType = isManager ? "all" : "user";
-    return Axios.get(`${API_URL}/reservation/${reqType}/?page=${page}`, {
+  getReservations: async ({ page = 1 }, { jwt }) => {
+    return Axios.get(`${API_URL}/reservation/?page=${page}`, {
       headers: { jwt },
     });
   },
