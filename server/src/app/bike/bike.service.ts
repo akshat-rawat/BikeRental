@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import Rating from '../../db/entity/rating';
+import User from '../../db/entity/user';
 import Bike from '../../db/entity/bike';
 import Reservation from '../../db/entity/reservation';
 import { PageSize } from '../util';
@@ -48,13 +50,57 @@ export default class BikeService {
     throw new NotFoundException();
   }
 
-  async addReservation(id, authUser, { fromDateTime, toDateTime }) {
-    const reservation = new Reservation();
-    reservation.bikeId = id;
-    reservation.userId = authUser.id;
-    reservation.fromDateTime = fromDateTime;
-    reservation.toDateTime = toDateTime;
-    await reservation.save();
-    return reservation;
+  async addReservation({ bikeId, fromDateTime, toDateTime }, authUser) {
+    const bike = await Bike.findOne(bikeId);
+    if (bike) {
+      const reservation = new Reservation();
+      reservation.bikeId = bikeId;
+      reservation.userId = authUser.id;
+      reservation.fromDateTime = fromDateTime;
+      reservation.toDateTime = toDateTime;
+      await reservation.save();
+      return reservation;
+    }
+    throw new NotFoundException();
+  }
+
+  async updateBikeRating(bikeId: number) {
+    const bike = await Bike.findOne(bikeId);
+
+    const ratings = await Rating.find({ where: { bikeId } });
+    if (ratings.length === 0) {
+      bike.avgRating = 0;
+      await bike.save();
+      return bike;
+    }
+
+    const totalRatings = ratings.reduce(
+      (totalRating, review) => review.rating + totalRating,
+      0,
+    );
+
+    const avgRating = Number(Number(totalRatings / ratings.length).toFixed(2));
+    bike.avgRating = avgRating;
+    console.log(avgRating, ratings);
+    await bike.save();
+  }
+
+  async addRating({ bikeId, rating }, authUser: User) {
+    const rate = await Rating.findOne({
+      where: { userId: authUser.id, bikeId },
+    });
+
+    if (rate) {
+      rate.rating = rating;
+      await rate.save();
+    } else {
+      const newRating = new Rating();
+      newRating.bikeId = bikeId;
+      newRating.rating = rating;
+      newRating.userId = authUser.id;
+      await newRating.save();
+    }
+
+    this.updateBikeRating(bikeId);
   }
 }

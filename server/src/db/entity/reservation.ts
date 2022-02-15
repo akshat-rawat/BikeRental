@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import Bike from './bike';
 
 @Entity({ name: 'reservation' })
 export default class Reservation extends BaseEntity {
@@ -7,4 +8,9 @@ export default class Reservation extends BaseEntity {
   @Column() toDateTime: string;
   @Column() userId: number;
   @Column() bikeId: number;
+  @Column() status: "active" | "cancel";
+  
+  @ManyToOne(() => Bike)
+  @JoinColumn({ name: 'bikeId', referencedColumnName: 'id' })
+  bike: Bike;
 }

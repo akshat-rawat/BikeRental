@@ -10,7 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import UserService from './user.service';
-import { loginValidate, signupSchema, userSchema } from '../validator';
+import { loginValidate, signupValidate, userValidate } from '../validator';
 import ManagerGuard from '../guard/manager.guard';
 
 @Controller('user')
@@ -25,14 +25,14 @@ export default class UserController {
 
   @Post('/signup')
   signup(@Body() body: Record<string, unknown>) {
-    const { email, password, name } = signupSchema(body);
+    const { email, password, name } = signupValidate(body);
     return this.userService.signup({ email, password, name });
   }
 
   @UseGuards(ManagerGuard)
   @Post('/')
   addUser(@Body() body: Record<string, unknown>) {
-    const { name, email, password, isManager } = userSchema(body);
+    const { name, email, password, isManager } = userValidate(body);
     return this.userService.addUser({email, password, name, isManager});
   }
 
@@ -45,7 +45,7 @@ export default class UserController {
   @UseGuards(ManagerGuard)
   @Put('/:id')
   updateUser(@Param('id') id: string, @Body() body: Record<string, unknown>) {
-   const { name, email, password, isManager } = userSchema(body);
+   const { name, email, password, isManager } = userValidate(body);
    return this.userService.updateUser(id, {email, password, name, isManager});
   }
 

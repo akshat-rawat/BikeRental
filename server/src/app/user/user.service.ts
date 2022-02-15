@@ -12,6 +12,8 @@ export default class UserService {
     if (user) {
       if (Bcrypt.compareSync(password, user.password)) {
         return {
+          ...user,
+          password: undefined,
           jwt: Jwt.sign({ id: user.id }, JWT_SECRET_KEY, { expiresIn: '1d' }),
         };
       } else throw new HttpException('Email and password did not match', 400);

@@ -5,6 +5,8 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { TextField, Box, Card, CardActions, CardContent, Button, Typography, Checkbox } from "@mui/material";
+import { Api } from "../service/api";
+import useAuth from "../hooks/useAuth";
 
 export default function User({
     userData,
@@ -19,24 +21,42 @@ export default function User({
         isManager: false
     });
 
+    const [user] = useAuth();
+
     useEffect(() => {
-        if (userData) setEditData({ password: "", ...userData });
+        if (userData) setEditData({ ...userData, password: "" });
     }, [userData]);
 
     const handleDelete = () => {
-        toast.success("User Deleted Successfully");
-        reload();
+        Api.deleteUser(editData.id, user)
+            .then(() => {
+                toast.success("User Deleted Successfully");
+                reload();
+            })
+            .catch(err => toast.error(err?.response?.data?.message || "Something went wrong"));
+    }
+
+    const addUser = () => {
+        Api.addUser(editData, user)
+            .then(() => {
+                toast.success("User Added Successfully");
+                reload();
+            })
+            .catch(err => toast.error(err?.response?.data?.message || "Something went wrong"));
+    }
+
+    const updateUser = () => {
+        Api.updateUser(editData.id, editData, user)
+            .then(() => {
+                toast.success("User Updated Successfully");
+                reload();
+            })
+            .catch(err => toast.error(err?.response?.data?.message || "Something went wrong"));
     }
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (isNew) {
-            toast.success("User Added Successfully");
-            reload();
-            return;
-        }
-        toast.success("User Updated Successfully");
-        reload();
+        isNew ? addUser() : updateUser();
     }
 
     return <>
@@ -49,7 +69,7 @@ export default function User({
                             <TextField required margin="normal" id="outlined-email" label="Email" type="email" value={editData.email} onChange={(e) => setEditData({ ...editData, email: e.target.value })} /> <br />
                             <TextField required margin="normal" id="outlined-password" label="Password" type="password" value={editData.password} onChange={(e) => setEditData({ ...editData, password: e.target.value })} /> <br />
                             <Typography variant="h6">
-                                <Checkbox checked={editData.isManager} onChange={e => { setEditData({ ...editData, isManager: e.target.checked }) }} />
+                                <Checkbox checked={editData.isManager} onChange={e => setEditData({ ...editData, isManager: e.target.checked })} />
                                 Manager
                             </Typography>
                         </CardContent> :

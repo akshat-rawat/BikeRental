@@ -34,6 +34,7 @@ import Reservation from './db/entity/reservation';
     bike.model = `Model ${i}`;
     bike.color = `Color ${i}`;
     bike.location = `Location ${i}`;
+    bike.avgRating = Math.floor(Math.random() * 4) + 1;
     bike.isAvailable = Math.random() >= 0.5;
     await bike.save();
   }
@@ -42,6 +43,7 @@ import Reservation from './db/entity/reservation';
     const reservation = new Reservation();
     reservation.userId = Math.random() >= 0.5 ? manager.id : regular.id;
     reservation.bikeId = Math.floor(Math.random() * 24) + 1;
+    reservation.status = 'active';
     const randomDay = Math.floor(Math.random() * 10);
     reservation.fromDateTime = moment()
       .subtract(randomDay, 'day')

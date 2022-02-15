@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
 
 import AuthGuard from '../guard/auth.guard';
 import ManagerGuard from '../guard/manager.guard';
@@ -8,7 +8,7 @@ import ReservationService from './reservation.service';
 export default class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
 
-  @UseGuards(ManagerGuard)
+  // @UseGuards(ManagerGuard)
   @Get('/all')
   getAllReservations(@Query('page') page = '1') {
     return this.reservationService.getAllReservations(page);
@@ -21,7 +21,7 @@ export default class ReservationController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('/:id')
+  @Delete('/:id')
   deleteReservation(@Param('id') id: string, @Req() req: any) {
     return this.reservationService.deleteReservation(id, req.user);
   }

@@ -15,6 +15,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
   bcryptjs: ^2.4.3
+  cors: ^2.8.5
   eslint: ^8.0.1
   eslint-config-prettier: ^8.3.0
   eslint-plugin-prettier: ^4.0.0
@@ -42,6 +43,7 @@ dependencies:
   '@nestjs/platform-express': 8.2.6_732a54a2558f64827b8cc4f9baac4f1f
   '@nestjs/typeorm': 8.0.3_2c94c001be0be3bb24065798f7450ff9
   bcryptjs: 2.4.3
+  cors: 2.8.5
   joi: 17.6.0
   jsonwebtoken: 8.5.1
   moment: 2.29.1

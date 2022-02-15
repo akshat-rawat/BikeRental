@@ -6,11 +6,20 @@ import React from "react";
 import { toast } from "react-toastify";
 import { Box, Card, CardActions, CardContent, Button, Typography } from "@mui/material";
 
+import useAuth from "../hooks/useAuth";
+import { Api } from "../service/api";
+
 export default function Reservation({ reservationData, reload }) {
 
+    const [user] = useAuth();
+
     const handleClick = () => {
-        toast.success("Reservation has been cancelled!");
-        reload();
+        Api.deleteReservation(reservationData.id, user)
+            .then(() => {
+                toast.success("Reservation has been cancelled!");
+                reload();
+            })
+            .catch(err => toast.error(err?.response?.data?.message || "Something went wrong"));
     }
 
     if (!reservationData) return <></>;
@@ -20,10 +29,10 @@ export default function Reservation({ reservationData, reload }) {
                 <React.Fragment>
                     <CardContent>
                         <Typography variant="h4" component="div">
-                            {reservationData.bikeModel}
+                            {reservationData.bike.model}
                         </Typography>
                         <Typography variant="h6">
-                            {reservationData.fromDate} - {reservationData.toDate}
+                            {reservationData.fromDateTime} to {reservationData.toDateTime}
                         </Typography>
                     </CardContent>
                     <CardActions>

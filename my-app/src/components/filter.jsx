@@ -14,8 +14,8 @@ export default function Filter({ setFilterData }) {
         color: "",
         location: "",
         avgRating: 0,
-        fromDate: null,
-        toDate: null
+        fromDateTime: null,
+        toDateTime: null
     });
 
     const handleSubmit = () => {
@@ -47,10 +47,10 @@ export default function Filter({ setFilterData }) {
                 margin="normal"
                 renderInput={(props) => <TextField {...props} />}
                 label="From"
-                maxDate={data.toDate}
-                value={data.fromDate}
+                maxDate={data.toDateTime}
+                value={data.fromDateTime}
                 onChange={(newValue) => {
-                    setData({ ...data, fromDate: newValue });
+                    setData({ ...data, fromDateTime: newValue });
                 }}
             />
         </LocalizationProvider>
@@ -59,10 +59,10 @@ export default function Filter({ setFilterData }) {
                 margin="normal"
                 renderInput={(props) => <TextField {...props} />}
                 label="To"
-                minDate={data.fromDate}
-                value={data.toDate}
+                minDate={data.fromDateTime}
+                value={data.toDateTime}
                 onChange={(newValue) => {
-                    setData({ ...data, toDate: newValue });
+                    setData({ ...data, toDateTime: newValue });
                 }}
             />
         </LocalizationProvider> <br />

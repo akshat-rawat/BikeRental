@@ -22,11 +22,6 @@ const UserSchema = SignupSchema.append({
   isManager: Joi.boolean().required(),
 });
 
-export const loginValidate = (data: Record<string, unknown>) => validate(LoginSchema, data);
-export const signupSchema = (data: Record<string, unknown>) => validate(SignupSchema, data);
-export const userSchema = (data: Record<string, unknown>) => validate(UserSchema, data);
-
-
 const BikeSchema = Joi.object({
   model: Joi.string().min(1).required(),
   color: Joi.string().min(1).required(),
@@ -34,12 +29,21 @@ const BikeSchema = Joi.object({
   isAvailable: Joi.boolean().required(),
 });
 
-export const bikeSchema = (data: Record<string, unknown>) => validate(BikeSchema, data);
-
-
 const ReservationSchema = Joi.object({
+  bikeId: Joi.number().min(1).required(),
   fromDateTime: Joi.date().iso().required(),
   toDateTime: Joi.date().iso().greater(Date.now()).min(Joi.ref('fromDateTime')).required(),
 });
 
-export const reservationSchema = (data: Record<string, unknown>) => validate(ReservationSchema, data);
+const RatingSchema = Joi.object({ 
+  bikeId: Joi.number().min(1).required(),
+  rating: Joi.number().min(1).max(5).required()
+});
+
+
+export const loginValidate = (data: Record<string, unknown>) => validate(LoginSchema, data);
+export const signupValidate = (data: Record<string, unknown>) => validate(SignupSchema, data);
+export const userValidate = (data: Record<string, unknown>) => validate(UserSchema, data);
+export const bikeValidate = (data: Record<string, unknown>) => validate(BikeSchema, data);
+export const reservationValidate = (data: Record<string, unknown>) => validate(ReservationSchema, data);
+export const ratingValidate = (data: Record<string, unknown>) => validate(RatingSchema, data);

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Pagination } from "@mui/material";
 
+import useAuth from "../hooks/useAuth";
 import { Api } from "../service/api";
 import Reservation from "../components/reservation";
 
@@ -10,14 +11,16 @@ export default function ReservationPage() {
     const [pages, setPages] = useState({ currPage: 1, totalPages: 3 });
     const [bit, setBit] = useState(true);
 
+    const [user] = useAuth();
+
     useEffect(() => {
-        Api.getReservations({ page: pages.currPage })
+        Api.getReservations({ page: pages.currPage }, user)
             .then((res) => {
                 setReservationsData(res);
                 setPages({ currPage: res.data.page, totalPages: res.data.pageCount })
             })
             .catch(err => toast.error(err));
-    }, [pages.currPage, bit]);
+    }, [pages.currPage, bit, user]);
 
     const reload = () => setBit(!bit);
 
