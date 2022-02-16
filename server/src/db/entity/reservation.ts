@@ -17,7 +17,7 @@ export default class Reservation extends BaseEntity {
   @Column() bikeId: number;
   @Column() status: 'active' | 'cancel';
 
-  @ManyToOne(() => Bike)
+  @ManyToOne(() => Bike, {onDelete: 'CASCADE'})
   @JoinColumn({ name: 'bikeId', referencedColumnName: 'id' })
   bike: Bike;
 }

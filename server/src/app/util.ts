@@ -6,7 +6,8 @@ export const JWT_SECRET_KEY = 'iuweydhj30qf9gqy3dj32hu4i';
 export const decryptJwt = async (jwt: string) => {
   try {
     const { id } = Jwt.verify(jwt, JWT_SECRET_KEY);
-    return await User.findOne(id);
+    const user = await User.findOne(id);
+    return user;
   } catch (e) {
     return undefined;
   }

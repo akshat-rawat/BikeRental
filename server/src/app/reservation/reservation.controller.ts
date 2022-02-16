@@ -28,7 +28,7 @@ export default class ReservationController {
 
   @UseGuards(AuthGuard)
   @Put('/:id/cancel')
-  deleteReservation(@Param('id') reservationId: string, @Req() req: any) {
+  cancelReservation(@Param('id') reservationId: string, @Req() req: any) {
     return this.reservationService.cancelReservation(reservationId, req.user);
   }
 

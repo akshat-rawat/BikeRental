@@ -22,7 +22,7 @@ export default function SignUp() {
             password: data.get('password')
         })
             .then(() => {
-                toast.success("SIGN UP SUCCESSFULL");
+                toast.success("Sign Up Successful");
                 navigate("/login");
             })
             .catch((error) => {

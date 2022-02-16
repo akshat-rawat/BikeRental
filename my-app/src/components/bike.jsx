@@ -3,6 +3,7 @@
  * to be used on bike list page
  */
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { TextField, Rating, Box, Card, CardActions, CardContent, Button, Typography, Checkbox } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
@@ -20,10 +21,10 @@ export default function Bike({
     isNew,
     reload,
     handleBooking,
-    canBookNow
+    canBookNow,
+    setAddToggle
 }) {
     const [isEditMode, setEditMode] = useState(isNew);
-    const [ratingMode, setRatingmode] = useState(false);
     const [editData, setEditData] = useState({
         avgRating: 0,
         model: "",
@@ -32,6 +33,7 @@ export default function Bike({
         isAvailable: false
     });
 
+    const navigate = useNavigate();
     const [user] = useAuth();
 
     useEffect(() => {
@@ -56,6 +58,7 @@ export default function Bike({
                     reload();
                 })
                 .catch(err => toast.error(err?.response?.data?.message || "Something went wrong"));
+            setAddToggle(false);
         } else {
             Api.updateBike(editData.id, editData, user)
                 .then(() => {
@@ -63,18 +66,8 @@ export default function Bike({
                     reload();
                 })
                 .catch(err => toast.error(err?.response?.data?.message || "Something went wrong"));
+            setEditMode(false);
         }
-        setEditMode(false);
-    }
-
-    const addRating = () => {
-        Api.addRating(editData, user)
-            .then(() => {
-                toast.success("Rating added!");
-                setRatingmode(false)
-                reload();
-            })
-            .catch(err => toast.error(err?.response?.data?.message) || "Something went wrong");
     }
 
     return <>
@@ -117,20 +110,18 @@ export default function Bike({
                                                     {bikeData.location}
                                                 </Typography> 
                                             </div>
-
-
                                         </>
                                     }
-
                                 </div>
 
                             </div>
 
                         </CardContent>
                         <CardActions>
-                            {/* {!ratingMode && !isNew && <Button size="small" onClick={() => setRatingmode(true)}>Rate Now</Button>} */}
-                            {/* {ratingMode && !isNew && <Button size="small" onClick={addRating}>Done</Button>} */}
-                            {!isEditMode && bikeData.isAvailable && canBookNow && <div style={{ minWidth: "100px" }}> <Button size="medium" type="submit" onSubmit={handleBooking}>Book Now</Button></div>}
+                            <div className="footer-left">
+                            {user.isManager && <Button size="medium" onClick={() => navigate(`/reservations?bikeId=${bikeData.id}`)}>See Reservations</Button>}
+                            {!isEditMode && bikeData.isAvailable && canBookNow && <Button size="medium" onClick={() => handleBooking(bikeData.id)}>Book Now</Button>}
+                            </div>
                             {user.isManager && <div className="footer-icons">
                                 {!isNew && <Button size="small" onClick={() => setEditMode(!isEditMode)}>{isEditMode ? <CloseIcon color="error" /> : <EditIcon />}</Button>}
                                 {isEditMode ? <Button size="small" type="submit"><DoneIcon color="success" /></Button> : <Button size="small" onClick={handleDelete}><DeleteIcon color="error" /></Button>}
@@ -169,6 +160,11 @@ const StyledComponents = styled.div`
        display: flex;
        justify-content: space-between;
        font-size: 18px;
+    }
+
+    .footer-left { 
+        display: flex;
+        width: 500px;
     }
 
 

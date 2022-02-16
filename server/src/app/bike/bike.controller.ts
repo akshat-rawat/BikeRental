@@ -15,7 +15,7 @@ import ManagerGuard from '../guard/manager.guard';
 import AuthGuard from '../guard/auth.guard';
 import {
   bikeValidate,
-  ratingValidate,
+  getBikeValidate,
   reservationValidate,
 } from '../validator';
 import BikeService from './bike.service';
@@ -34,15 +34,21 @@ export default class BikeController {
 
   @UseGuards(AuthGuard)
   @Get('/')
-  getBikes(
-    @Query()
-    { page = '1', color, model, location, rating, fromDateTime, toDateTime },
-    @Req() req,
-  ) {
-    // todo add joi validation, all params are optional
-    // fromDate and toDate either both can be empty, or both needs to be valid and present
+  getBikes(@Query() query, @Req() req) {
+    const { page, color, model, location, rating, fromDateTime, toDateTime } =
+      getBikeValidate(query);
+    if (fromDateTime && toDateTime)
+      this.validateFromAndToDate({ fromDateTime, toDateTime });
     return this.bikeService.getBikes(
-      { page, color, model, location, rating, fromDateTime, toDateTime },
+      {
+        page,
+        color,
+        model,
+        location,
+        rating,
+        fromDateTime,
+        toDateTime,
+      },
       req.user,
     );
   }
@@ -80,7 +86,10 @@ export default class BikeController {
     if (!toDateTime || !fromDateTime)
       throw new HttpException('From data and to date both are required', 400);
 
-    if (fromDateTime >= toDateTime)
+      fromDateTime = moment(fromDateTime).format();
+      toDateTime = moment(toDateTime).format();
+
+      if (fromDateTime >= toDateTime)
       throw new HttpException("From date can't be more than to Date", 400);
     if (toDateTime < moment().toISOString())
       throw new HttpException("Can't book bike for past date", 400);

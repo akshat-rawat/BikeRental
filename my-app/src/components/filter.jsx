@@ -6,7 +6,6 @@ import { TextField, Slider, Typography, Button, Box } from '@mui/material';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import { toast } from "react-toastify";
 import styled from "styled-components"
 
 export default function Filter({ setFilterData }) {
@@ -14,15 +13,13 @@ export default function Filter({ setFilterData }) {
         model: "",
         color: "",
         location: "",
-        avgRating: 0,
+        minRating: 0,
         fromDateTime: null,
         toDateTime: null
     });
 
     const handleSubmit = () => {
-        console.log(data.fromDateTime, data.toDateTime.toISOString());
         setFilterData({ ...data });
-        toast.success("Data Filtered!");
     }
 
     return <>
@@ -46,9 +43,9 @@ export default function Filter({ setFilterData }) {
                         valueLabelDisplay="auto"
                         step={1}
                         marks
-                        min={1}
+                        min={0}
                         max={5}
-                        onChange={(e) => setData({ ...data, avgRating: e.target.value })}
+                        onChange={(e) => setData({ ...data, minRating: e.target.value })}
                     />
                 </Box>
             </div>

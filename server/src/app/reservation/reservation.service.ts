@@ -31,7 +31,7 @@ export default class ReservationService {
     const ratingMap = ratings.reduce((acc, rating) => {
       acc[rating.reservationId] = rating.rating;
       return acc;
-    }, 0);
+    }, {});
 
     reservations.map((reservation) => {
       // @ts-ignore
@@ -61,6 +61,8 @@ export default class ReservationService {
 
   async addRating({ reservationId, rate }, authUser: User) {
     const res = await Reservation.findOne(reservationId);
+    if (res.status === 'cancel')
+      throw new HttpException('Cancelled reservation cannot be rated.', 400);
     if (res) {
       const { bikeId } = res;
       let rating = await Rating.findOne({
@@ -81,7 +83,7 @@ export default class ReservationService {
         rating.bikeId = res.bikeId;
         rating.reservationId = res.id;
         rating.rating = rate;
-        await rate.save();
+        await rating.save();
         await this.updateBikeRating(res.bikeId);
         return rating;
       }

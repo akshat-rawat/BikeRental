@@ -31,18 +31,20 @@ import Reservation from './db/entity/reservation';
   for (let i = 1; i < 25; i++) {
     const bike = new Bike();
     bike.id = i;
-    bike.model = `Model ${i}`;
-    bike.color = `Color ${i}`;
-    bike.location = `Location ${i}`;
-    bike.avgRating = Math.floor(Math.random() * 4) + 1;
+    bike.model = `model ${i}`;
+    bike.color = `color ${i}`;
+    bike.location = `location ${i}`;
     bike.isAvailable = Math.random() >= 0.5;
     await bike.save();
   }
 
+  const obj = {}
   for (let i = 1; i < 15; i++) {
     const reservation = new Reservation();
     reservation.userId = Math.random() >= 0.5 ? manager.id : regular.id;
     reservation.bikeId = Math.floor(Math.random() * 24) + 1;
+    if (obj[reservation.bikeId.toString()]) continue;
+    obj[reservation.bikeId.toString()] = true;
     reservation.status = 'active';
     const randomDay = Math.floor(Math.random() * 10);
     reservation.fromDateTime = moment()

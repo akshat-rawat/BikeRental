@@ -1,4 +1,5 @@
 import Axios from "axios";
+import * as moment from "moment";
 
 const API_URL = "http://localhost:3001";
 
@@ -32,10 +33,10 @@ export const Api = {
     );
   },
 
-  updateUser: async (id, { name, email, password, isManager }, { jwt }) => {
+  updateUser: async (id, { name, email, isManager }, { jwt }) => {
     return Axios.put(
       `${API_URL}/user/${id}`,
-      { name, email, password, isManager },
+      { name, email, isManager },
       { headers: { jwt } }
     );
   },
@@ -45,10 +46,22 @@ export const Api = {
   },
 
   getBikes: async (
-    { model, color, location, avgRating, page = 1 },
+    { model, color, location, minRating, page = 1, fromDateTime, toDateTime },
     { jwt }
   ) => {
-    return Axios.get(`${API_URL}/bike/?page=${page}`, { headers: { jwt } });
+    if (fromDateTime) fromDateTime = moment(fromDateTime).format();
+    if (toDateTime) toDateTime = moment(toDateTime).format();
+    return Axios.get(`${API_URL}/bike/?page=${page}`, {
+      headers: { jwt },
+      params: {
+        fromDateTime,
+        toDateTime,
+        model,
+        color,
+        location,
+        rating: minRating,
+      },
+    });
   },
 
   addBike: async ({ model, color, location, isAvailable }, { jwt }) => {
@@ -72,6 +85,8 @@ export const Api = {
   },
 
   bookBike: async (id, { fromDateTime, toDateTime }, { jwt }) => {
+    if (fromDateTime) fromDateTime = moment(fromDateTime).format();
+    if (toDateTime) toDateTime = moment(toDateTime).format();
     return Axios.post(
       `${API_URL}/bike/book`,
       { bikeId: id, fromDateTime, toDateTime },
@@ -79,20 +94,25 @@ export const Api = {
     );
   },
 
-  getReservations: async ({ page = 1 }, { jwt }) => {
+  getReservations: async ({ page = 1, bikeId, userId }, { jwt }) => {
     return Axios.get(`${API_URL}/reservation/?page=${page}`, {
       headers: { jwt },
+      params: { bikeId, userId },
     });
   },
 
-  deleteReservation: async (id, { jwt }) => {
-    return Axios.delete(`${API_URL}/reservation/${id}`, { headers: { jwt } });
+  cancelReservation: async (id, { jwt }) => {
+    return Axios.put(
+      `${API_URL}/reservation/${id}/cancel`,
+      {},
+      { headers: { jwt } }
+    );
   },
 
-  addRating: async ({ id, avgRating }, { jwt }) => {
+  addRating: async ({ id, rating }, { jwt }) => {
     return Axios.post(
-      `${API_URL}/bike/rate/`,
-      { bikeId: id, rating: avgRating },
+      `${API_URL}/reservation/${id}/rate/${rating}`,
+      {},
       { headers: { jwt } }
     );
   },

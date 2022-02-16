@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Pagination } from "@mui/material";
+import { Pagination, Typography } from "@mui/material";
 import styled from "styled-components";
 import { Button } from "@material-ui/core";
 import AddIcon from '@mui/icons-material/Add';
@@ -33,18 +33,18 @@ export default function UserPage() {
     return <>
         <StyledComponents>
             <div className="container">
-                {addToggle && <User isNew={true} reload={reload} />}
+                {addToggle && <User isNew={true} reload={reload} setAddToggle={setAddToggle} />}
                 {usersData.data.users.map(userData =>
                     <User key={userData.id} userData={userData} reload={reload} isNew={false} />
                 )}
 
                 <div className="pagination-style">
-                    <Pagination
-                        count={pages.totalPages}
-                        page={pages.currPage}
-                        onChange={(_, cpage) => setPages({ ...pages, currPage: cpage })}
-                        color="primary"
-                    />
+                        {usersData.data.users.length !== 0 ? <Pagination
+                            count={pages.totalPages}
+                            page={pages.currPage}
+                            onChange={(_, cpage) => setPages({ ...pages, currPage: cpage })}
+                            color="primary"
+                        /> : <Typography variant="h4">No Users Found</Typography>}
                 </div>
             </div>
 

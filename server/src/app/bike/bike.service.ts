@@ -1,19 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import User from '../../db/entity/user';
 import Bike from '../../db/entity/bike';
 import Reservation from '../../db/entity/reservation';
 import { PageSize } from '../util';
-import { FindCondition, getRepository, MoreThanOrEqual } from 'typeorm';
-import { NotIn } from '../typeorm.operator';
-import Rating from '../../db/entity/rating';
+import { FindCondition, getRepository, In, MoreThanOrEqual } from 'typeorm';
+import * as moment from 'moment';
 
 @Injectable()
 export default class BikeService {
   async addBike({ model, color, location, isAvailable }) {
     const bike = new Bike();
-    bike.model = model;
-    bike.color = color;
-    bike.location = location;
+    bike.model = model.toLowerCase();
+    bike.color = color.toLowerCase();
+    bike.location = location.toLowerCase();
     bike.isAvailable = isAvailable;
     await bike.save();
     return bike;
@@ -25,29 +24,25 @@ export default class BikeService {
   ) {
     page = Math.max(Number(page) || 1, 1);
     const whereClause: FindCondition<Bike> = {};
-    if (color) whereClause.color = color;
-    if (model) whereClause.model = model;
-    if (location) whereClause.location = location;
+    if (color) whereClause.color = color.toLowerCase();
+    if (model) whereClause.model = model.toLowerCase();
+    if (location) whereClause.location = location.toLowerCase();
     if (rating) whereClause.avgRating = MoreThanOrEqual(rating);
     if (!authUser.isManager) whereClause.isAvailable = true;
 
     if (fromDateTime && toDateTime) {
-      const bookedBikes: number[] = await this.getBookedBiked({
-        fromDateTime,
-        toDateTime,
+      const nonBookedBikes: number[] = await this.getNonBookedBikes({
+        fromDateTime: moment(fromDateTime).format(),
+        toDateTime: moment(toDateTime).format(),
       });
-
-      if (bookedBikes.length > 0) {
-        whereClause.id = NotIn(bookedBikes);
-      }
+      if (nonBookedBikes.length > 0)
+        whereClause.id = In(nonBookedBikes);
     }
-
-    const bikes = await Bike.find({
+    let bikes = await Bike.find({
       where: whereClause,
       take: PageSize,
       skip: (page - 1) * PageSize,
     });
-
     const bikeCount = await Bike.count({ where: whereClause });
     const pageCount = Math.ceil(bikeCount / PageSize);
     return { bikes, page, pageCount };
@@ -75,20 +70,26 @@ export default class BikeService {
   }
 
   async addReservation({ bikeId, fromDateTime, toDateTime }, authUser) {
+    fromDateTime = moment(fromDateTime).format();
+    toDateTime = moment(toDateTime).format();
+    const bikeIds = await this.getNonBookedBikes({ fromDateTime, toDateTime });
+    if (!bikeIds.includes(bikeId))
+      throw new HttpException('Bike is already booked', 405);
     const bike = await Bike.findOne(bikeId);
     if (bike) {
       const reservation = new Reservation();
       reservation.bikeId = bikeId;
       reservation.userId = authUser.id;
-      reservation.fromDateTime = fromDateTime;
-      reservation.toDateTime = toDateTime;
+      reservation.fromDateTime = moment(fromDateTime).format();
+      reservation.toDateTime = moment(toDateTime).format();
+      reservation.status = 'active';
       await reservation.save();
       return reservation;
     }
     throw new NotFoundException();
   }
 
-  private async getBookedBiked({
+  private async getNonBookedBikes({
     fromDateTime,
     toDateTime,
   }): Promise<number[]> {
@@ -101,7 +102,11 @@ export default class BikeService {
         { fromDateTime, toDateTime, status: 'active' },
       )
       .getMany();
-    const bikeIds = reservations.map((r) => r.bikeId);
-    return bikeIds;
+    const reservedBikeIds = reservations.map((r) => r.bikeId);
+    const allBikes = await Bike.find({});
+    const notBookedBikes = allBikes
+      .filter((b) => !reservedBikeIds.includes(b.id))
+      .map((b) => b.id);
+    return notBookedBikes;
   }
 }

@@ -52,13 +52,15 @@ export default class UserService {
     return { users, page, pageCount };
   }
 
-  async updateUser(id: string, { name, email, isManager, password }) {
+  async updateUser(id: string, { name, email, isManager }) {
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    if (existingUser && existingUser.id !== parseInt(id))
+      throw new HttpException('User already exists with same email', 400);
     const user = await User.findOne(id);
     if (user) {
       user.name = name;
       user.email = email.toLowerCase();
       user.isManager = isManager;
-      user.password = Bcrypt.hashSync(password, 10);
       await user.save();
       return user;
     } else throw new NotFoundException();

@@ -7,5 +7,5 @@ export default class Bike extends BaseEntity {
   @Column() color: string;
   @Column() location: string;
   @Column({ default: false }) isAvailable: boolean;
-  @Column() avgRating: number;
+  @Column({default: 0}) avgRating: number;
 }
