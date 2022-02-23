@@ -14,6 +14,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import useAuth from "../hooks/useAuth"
 import { Api } from "../service/api";
 import styled from "styled-components";
+import showErrorToast from "../utils/error";
 
 
 export default function Bike({
@@ -46,7 +47,7 @@ export default function Bike({
                 toast.success("Bike Deleted Successfully");
                 reload();
             })
-            .catch(err => toast.error(err?.response?.data?.message || "Something went wrong"));
+            .catch(err => showErrorToast(err));
     }
 
     const handleSubmit = (event) => {
@@ -57,7 +58,7 @@ export default function Bike({
                     toast.success("Bike Added Successfully");
                     reload();
                 })
-                .catch(err => toast.error(err?.response?.data?.message || "Something went wrong"));
+                .catch(err => showErrorToast(err));
             setAddToggle(false);
         } else {
             Api.updateBike(editData.id, editData, user)
@@ -65,7 +66,7 @@ export default function Bike({
                     toast.success("Bike Updated Successfully");
                     reload();
                 })
-                .catch(err => toast.error(err?.response?.data?.message || "Something went wrong"));
+                .catch(err => showErrorToast(err));
             setEditMode(false);
         }
     }
@@ -119,7 +120,7 @@ export default function Bike({
                         </CardContent>
                         <CardActions>
                             <div className="footer-left">
-                            {user.isManager && <Button size="medium" onClick={() => navigate(`/reservations?bikeId=${bikeData.id}`)}>See Reservations</Button>}
+                            {user.isManager && !isEditMode && <Button size="medium" onClick={() => navigate(`/reservations?bikeId=${bikeData.id}`)}>See Reservations</Button>}
                             {!isEditMode && bikeData.isAvailable && canBookNow && <Button size="medium" onClick={() => handleBooking(bikeData.id)}>Book Now</Button>}
                             </div>
                             {user.isManager && <div className="footer-icons">

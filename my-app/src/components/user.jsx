@@ -14,6 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DoneIcon from '@mui/icons-material/Done';
 import { Api } from "../service/api";
 import useAuth from "../hooks/useAuth";
+import showErrorToast from "../utils/error";
 
 export default function User({
     userData,
@@ -33,7 +34,7 @@ export default function User({
     const [user, setUser] = useAuth();
     const [coookies, setCookie, removeCookie] = useCookies(["user"]);
 
-    const logoutUser = () => { 
+    const logoutUser = () => {
         removeCookie("user");
         setUser(null);
         navigate("/");
@@ -50,7 +51,7 @@ export default function User({
                 if (editData.id === user.id) logoutUser();
                 reload();
             })
-            .catch(err => toast.error(err?.response?.data?.message || "Something went wrong"));
+            .catch(err => showErrorToast(err));
     }
 
     const addUser = () => {
@@ -110,7 +111,9 @@ export default function User({
                             </CardContent>
                             <CardActions>
                                 <div className="user-actions">
-                                    {user.isManager && <Button sx={{ padding: "0" }} size="medium" onClick={() => navigate(`/reservations?userId=${userData.id}`)}>See Reservations</Button>}
+                                    <div>
+                                        {!isEditMode && <Button sx={{ padding: "0" }} size="medium" onClick={() => navigate(`/reservations?userId=${userData.id}`)}>See Reservations</Button>}
+                                    </div>
                                     <div>
                                         {!isNew && <Button size="small" onClick={() => { setEditMode(!isEditMode); reload(); }}>{isEditMode ? <CloseIcon color="error" /> : <EditIcon />}</Button>}
                                         {isEditMode ? <Button size="small" type="submit"><DoneIcon color="success" /></Button> : <Button size="small" onClick={handleDelete}><DeleteIcon color="error" /></Button>}

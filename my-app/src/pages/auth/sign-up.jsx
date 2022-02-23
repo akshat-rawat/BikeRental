@@ -5,6 +5,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Container } from '@mui/material/';
 import { Api } from '../../service/api';
+import showErrorToast from '../../utils/error';
 
 
 const theme = createTheme();
@@ -25,9 +26,7 @@ export default function SignUp() {
                 toast.success("Sign Up Successful");
                 navigate("/login");
             })
-            .catch((error) => {
-                toast.error(error?.response?.data?.message || "Something went wrong");
-            });
+            .catch((error) => showErrorToast(error));
     };
 
     return (

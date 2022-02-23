@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { Pagination, Typography } from "@mui/material";
 import styled from "styled-components";
 import { Button } from "@material-ui/core";
@@ -9,6 +8,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import useAuth from "../hooks/useAuth";
 import { Api } from "../service/api";
 import User from "../components/user";
+import showErrorToast from "../utils/error";
 
 export default function UserPage() {
     const [usersData, setUsersData] = useState(null);
@@ -24,7 +24,7 @@ export default function UserPage() {
                 setUsersData(res);
                 setPages({ currPage: res.data.page, totalPages: res.data.pageCount })
             })
-            .catch(err => toast.error(err?.response?.data?.message || "Something went wrong"));
+            .catch(err => showErrorToast(err));
     }, [pages.currPage, bit, user]);
 
     const reload = () => setBit(!bit);
@@ -39,17 +39,17 @@ export default function UserPage() {
                 )}
 
                 <div className="pagination-style">
-                        {usersData.data.users.length !== 0 ? <Pagination
-                            count={pages.totalPages}
-                            page={pages.currPage}
-                            onChange={(_, cpage) => setPages({ ...pages, currPage: cpage })}
-                            color="primary"
-                        /> : <Typography variant="h4">No Users Found</Typography>}
+                    {usersData.data.users.length !== 0 ? <Pagination
+                        count={pages.totalPages}
+                        page={pages.currPage}
+                        onChange={(_, cpage) => setPages({ ...pages, currPage: cpage })}
+                        color="primary"
+                    /> : <Typography variant="h4">No Users Found</Typography>}
                 </div>
             </div>
 
             <div className="add-btn">
-                <Button variant="outlined" onClick={() => setAddToggle(!addToggle)}>
+                <Button variant="outlined" onClick={() => { setAddToggle(!addToggle); window.scrollTo(0, 0); }}>
                     {addToggle ? <RemoveIcon /> : <AddIcon />}
                 </Button>
             </div>

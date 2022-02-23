@@ -7,6 +7,7 @@ import styled from "styled-components";
 import useAuth from "../hooks/useAuth";
 import { Api } from "../service/api";
 import Reservation from "../components/reservation";
+import showErrorToast from "../utils/error";
 
 export default function ReservationPage() {
     const [reservationsData, setReservationsData] = useState(null);
@@ -22,7 +23,7 @@ export default function ReservationPage() {
                 setReservationsData(res);
                 setPages({ currPage: res.data.page, totalPages: res.data.pageCount })
             })
-            .catch(err => toast.error(err));
+            .catch(err => showErrorToast(err));
     }, [pages.currPage, bit, user]);
 
     const reload = () => setBit(!bit);

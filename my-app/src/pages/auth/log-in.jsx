@@ -8,6 +8,7 @@ import { Avatar, Button, CssBaseline, TextField, Link, Grid, Box, Typography, Co
 
 import { Api } from '../../service/api';
 import useAuth from '../../hooks/useAuth';
+import showErrorToast from '../../utils/error';
 
 
 const theme = createTheme();
@@ -29,9 +30,7 @@ export default function LogIn() {
         setUser(res.data);
         navigate("/");
       })
-      .catch((error) => {
-        toast.error(error?.response?.data?.message || "Something went wrong");
-      });
+      .catch((error) => showErrorToast(error));
   };
 
   return (

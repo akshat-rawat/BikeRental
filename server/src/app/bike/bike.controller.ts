@@ -91,7 +91,7 @@ export default class BikeController {
 
       if (fromDateTime >= toDateTime)
       throw new HttpException("From date can't be more than to Date", 400);
-    if (toDateTime < moment().toISOString())
+    if (toDateTime < moment().format())
       throw new HttpException("Can't book bike for past date", 400);
   }
 }

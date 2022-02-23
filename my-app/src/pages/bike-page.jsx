@@ -10,6 +10,7 @@ import useAuth from "../hooks/useAuth";
 import { Api } from "../service/api";
 import Filter from "../components/filter";
 import Bike from "../components/bike";
+import showErrorToast from "../utils/error";
 
 
 export default function BikePage() {
@@ -29,28 +30,30 @@ export default function BikePage() {
                 if (res.data.page > 1 && res.data.bikes.length === 0)
                     setPages({ totalPages: res.data.pageCount, currPage: res.data.page - 1 });
             })
-            .catch(err => toast.error(err?.response?.data?.message || "Something went wrong"));
+            .catch(err => showErrorToast(err));
     }, [pages.currPage, bit, user, filterData]);
 
     const reload = () => setBit(!bit);
 
     const handleBooking = (id) => {
-        if (!filterData || !filterData.fromDateTime || !filterData.toDateTime) 
+        if (!filterData || !filterData.fromDateTime || !filterData.toDateTime)
             return toast.error("Please enter from and to dates");
         Api.bookBike(id, filterData, user)
             .then(() => {
                 toast.success("Bike Booked Successfully");
                 reload();
             })
-            .catch(err => toast.error(err?.response?.data?.message || "Something went wrong"));
+            .catch(err => showErrorToast(err));
     }
+
+    const addFilter = (data) => setFilterData(data);
 
     if (!bikesData) return <></>
     return <>
         <StyledComponents>
             <div className="container">
                 <div className="left-side">
-                    <Filter setFilterData={setFilterData} />
+                    <Filter addFilter={addFilter} />
                 </div>
 
                 <div className="right-side">
@@ -71,7 +74,7 @@ export default function BikePage() {
             </div>
 
             {user.isManager && <div className="add-btn">
-                <Button variant="outlined" onClick={() => setAddToggle(!addToggle)}>
+                <Button variant="outlined" onClick={() => { setAddToggle(!addToggle); window.scrollTo(0, 0); }}>
                     {addToggle ? <RemoveIcon /> : <AddIcon />}
                 </Button>
             </div>}

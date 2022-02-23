@@ -8,7 +8,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import styled from "styled-components"
 
-export default function Filter({ setFilterData }) {
+export default function Filter({ addFilter }) {
     const [data, setData] = useState({
         model: "",
         color: "",
@@ -18,10 +18,7 @@ export default function Filter({ setFilterData }) {
         toDateTime: null
     });
 
-    const handleSubmit = () => {
-        setFilterData({ ...data });
-    }
-
+    const handleSubmit = () => addFilter({ ...data });
     return <>
         <StyledComponents>
             <h3>FILTER</h3>
@@ -35,7 +32,7 @@ export default function Filter({ setFilterData }) {
             <div className="filter-rating">
                 <Box margin="normal" >
                     <Typography id="non-linear-slider" gutterBottom sx={{ marginTop: '20px' }}>
-                        Min Rating
+                        Minimum Rating
                     </Typography>
                     <Slider
                         sx={{ margin: '5px 0' }}
@@ -54,7 +51,7 @@ export default function Filter({ setFilterData }) {
                     margin="normal"
                     renderInput={(props) => <TextField {...props} />}
                     label="From"
-                    maxDate={new Date(data.toDateTime?.getTime() - 86400000)}
+                    maxDateTime={new Date(data.toDateTime?.getTime() - 86400000)}
                     value={data.fromDateTime}
                     onChange={(newValue) => {
                         setData({ ...data, fromDateTime: newValue });
@@ -66,7 +63,7 @@ export default function Filter({ setFilterData }) {
                     margin="normal"
                     renderInput={(props) => <TextField {...props} />}
                     label="To"
-                    minDate={new Date(data.fromDateTime?.getTime() + 86400000)}
+                    minDateTime={Math.max(Date.now(), new Date(data.fromDateTime?.getTime() + 86400000)) || Date.now()}
                     value={data.toDateTime}
                     onChange={(newValue) => {
                         setData({ ...data, toDateTime: newValue });

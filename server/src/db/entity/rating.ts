@@ -7,8 +7,4 @@ export default class Rating extends BaseEntity {
   @Column() bikeId: number;
   @Column() rating: number;
   @Column() reservationId: number;
-
-  // @ManyToOne(() => Bike)
-  // @JoinColumn({ name: 'bikeId', referencedColumnName: 'id' })
-  // bike: Bike;
 }
